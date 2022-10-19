@@ -15,3 +15,17 @@ func Success(data interface{}) BaseResponse {
 		Data: data,
 	}
 }
+
+func Fail(msg string) BaseResponse {
+	return BaseResponse{
+		Code: -1,
+		Msg:  msg,
+	}
+}
+
+func Error(err error) BaseResponse {
+	return BaseResponse{
+		Code: -1,
+		Msg:  err.Error(),
+	}
+}

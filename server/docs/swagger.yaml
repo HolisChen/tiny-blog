@@ -1,0 +1,39 @@
+definitions:
+  request.UserLoginRequest:
+    properties:
+      loginId:
+        type: string
+      password:
+        type: string
+    type: object
+  response.LoginResponse:
+    properties:
+      jwt:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 执行登录返回token
+      parameters:
+      - description: 登录请求
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Response
+          schema:
+            $ref: '#/definitions/response.LoginResponse'
+      summary: 登录
+      tags:
+      - 用户
+swagger: "2.0"

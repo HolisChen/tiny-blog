@@ -7,12 +7,8 @@ import (
 	"net/http"
 )
 
-type ArticleApi struct {
-}
-
 func GetArticles(c *gin.Context) {
-	articles := service.ArticleServiceApp.GetArticles()
-	c.JSON(http.StatusOK, response.Success(articles))
+	c.JSON(http.StatusOK, response.Success(service.GetArticles()))
 }
 
 func CreateArticle(c *gin.Context) {
