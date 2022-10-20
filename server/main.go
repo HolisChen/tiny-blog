@@ -4,6 +4,8 @@ import (
 	"github.com/HolisChen/tiny-blog/api"
 	"github.com/HolisChen/tiny-blog/docs"
 	"github.com/HolisChen/tiny-blog/initialization"
+	"github.com/HolisChen/tiny-blog/model/response"
+	"github.com/HolisChen/tiny-blog/tools"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	swaggerfiles "github.com/swaggo/files"
@@ -21,17 +23,28 @@ func main() {
 
 func newServer() *gin.Engine {
 	r := gin.Default()
-	r.LoadHTMLGlob("web/templates/*")
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Tiny Blog",
-		})
-	})
 	//register swagger router
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	r.Use(Authentication())
 	api.RegisterRouter(r)
 	return r
+}
+
+func Authentication() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("token")
+		if token != "" {
+			if loginId, mail, err := tools.ParseJwt(token); err != nil {
+				c.JSON(http.StatusUnauthorized, response.Error(err))
+				c.Abort()
+			} else {
+				log.Info("loginId = ", loginId, "; mail = ", mail, "is visiting ", c.Request.URL.Path)
+				c.Next()
+			}
+		}
+		c.Next()
+	}
 }
 
 /**

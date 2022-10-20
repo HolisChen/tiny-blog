@@ -27,10 +27,12 @@ func Login(c *gin.Context) {
 	err := c.ShouldBind(loginReq)
 	if err != nil {
 		c.JSON(http.StatusOK, response.Error(err))
+		return
 	}
 	res, err := service.DoLogin(loginReq)
 	if err != nil {
 		c.JSON(http.StatusOK, response.Error(err))
+		return
 	}
 	c.JSON(http.StatusOK, response.Success(res))
 }
@@ -38,7 +40,29 @@ func Login(c *gin.Context) {
 /**
 注册方法
 */
+// 注册 godoc
+// @Summary 注册
+// @Schemes
+// @Description 用户注册并执行自动登录
+// @Tags 用户
+// @Accept json
+// @Produce json
+// @Param req body request.UserRegisterRequest true "注册请求"
+// @Success 200 {object} response.LoginResponse "Response"
+// @Router /user/register [post]
 func Register(c *gin.Context) {
+	req := &request.UserRegisterRequest{}
+	err := c.ShouldBind(req)
+	if err != nil {
+		c.JSON(http.StatusOK, response.Error(err))
+		return
+	}
+	err = service.DoRegister(req)
+	if err != nil {
+		c.JSON(http.StatusOK, response.Error(err))
+		return
+	}
+	c.JSON(http.StatusOK, response.OK())
 
 }
 

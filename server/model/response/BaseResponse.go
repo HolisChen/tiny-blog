@@ -16,6 +16,10 @@ func Success(data interface{}) BaseResponse {
 	}
 }
 
+func OK() BaseResponse {
+	return Success(nil)
+}
+
 func Fail(msg string) BaseResponse {
 	return BaseResponse{
 		Code: -1,
